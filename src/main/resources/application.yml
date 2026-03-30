@@ -13,3 +13,6 @@ spring:
       ddl-auto: ${JPA_DDL_AUTO}
     show-sql: ${JPA_SHOW_SQL}
     open-in-view: false
+
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
