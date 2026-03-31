@@ -1,0 +1,45 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    
+    <changeSet id="create-account-table" author="acukitoro">
+        <createTable tableName="account">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="status_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="add-fk-account-status" author="acukitoro">
+        <addForeignKeyConstraint baseTableName="account"
+                                 baseColumnNames="status_id"
+                                 constraintName="fk_account_account_status"
+                                 referencedTableName="account_status"
+                                 referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="add-fk-client" author="acukitoro">
+        <addForeignKeyConstraint baseTableName="account"
+                                 baseColumnNames="client_id"
+                                 constraintName="fk_account_client"
+                                 referencedTableName="client"
+                                 referencedColumnNames="id"
+        />
+    </changeSet>
+</databaseChangeLog>
