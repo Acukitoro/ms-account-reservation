@@ -5,9 +5,11 @@
            http://www.liquibase.org/xml/ns/dbchangelog
            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
-    <include file="db/changelog/001-create-account-status-table.xml"/>
-    <include file="db/changelog/002-load-account-status-data.xml"/>
-    <include file="db/changelog/003-create-client-table.xml"/>
-    <include file="db/changelog/004-create-account-table-and-fk.xml"/>
-
+    <changeSet id="load-account-status" author="acukitoro" runOnChange="true">
+        <loadUpdateData tableName="account_status"
+                        file="db/changelog/data/account_status.csv"
+                        primaryKey="id"
+                        encoding="UTF-8"
+        />
+    </changeSet>
 </databaseChangeLog>
