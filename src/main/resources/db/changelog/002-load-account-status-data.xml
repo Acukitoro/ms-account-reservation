@@ -5,7 +5,7 @@
            http://www.liquibase.org/xml/ns/dbchangelog
            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
-    <changeSet id="load-account-status" author="acukitoro" runOnChange="true">
+    <changeSet id="load-account-status" author="acukitoro">
         <loadUpdateData tableName="account_status"
                         file="db/changelog/data/account_status.csv"
                         primaryKey="id"

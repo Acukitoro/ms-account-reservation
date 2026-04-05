@@ -6,6 +6,11 @@
            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
     
     <changeSet id="create-account-table" author="acukitoro">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="account"/>
+            </not>
+        </preConditions>
         <createTable tableName="account">
             <column name="id" type="UUID">
                 <constraints primaryKey="true"/>
