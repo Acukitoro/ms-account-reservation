@@ -16,3 +16,11 @@ spring:
 
   liquibase:
     change-log: db/changelog/db.changelog-master.xml
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health, threaddump
