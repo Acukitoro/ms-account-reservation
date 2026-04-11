@@ -16,3 +16,11 @@ spring:
 
   liquibase:
     change-log: db/changelog/db.changelog-master.xml
+
+management:
+  server:
+    port: ${SERVER_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health, threaddump
