@@ -1,0 +1,306 @@
+openapi: 3.0.1
+info:
+  title: Client API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /clients:
+    post:
+      summary: Create client
+      operationId: createClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRequestDto'
+      responses:
+        '201':
+          description: Client has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponseDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    get:
+      summary: Get clients with pagination
+      operationId: getClients
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: fullName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: mdmCode
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Clients page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientPageResponseDto'
+
+
+  /clients/{clientId}:
+    get:
+      summary: Get client by clientId
+      operationId: getClientById
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Client found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponseDto'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    put:
+      summary: Update client by clientId
+      operationId: updateClientById
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientUpdateRequestDto'
+      responses:
+        '200':
+          description: Client updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponseDto'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    delete:
+      summary: Delete client by clientId
+      operationId: deleteClientById
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+  /clients/{clientId}/exists:
+    get:
+      summary: Client exists
+      operationId: existsByClientId
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Client already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientExistsResponse'
+
+
+components:
+  schemas:
+    ClientRequestDto:
+      type: object
+      required:
+        - fullName
+        - citizenship
+        - clientType
+        - documentNumber
+        - documentSeries
+        - documentType
+        - mdmCode
+      properties:
+        fullName:
+          type: string
+        citizenship:
+          type: string
+        clientType:
+          type: string
+        documentNumber:
+          type: string
+        documentSeries:
+          type: string
+        documentType:
+          type: string
+        mdmCode:
+          type: integer
+          format: int64
+    ClientResponseDto:
+      type: object
+      required:
+        - id
+        - mdmCode
+        - fullName
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        mdmCode:
+          type: integer
+          format: int64
+        fullName:
+          type: string
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - BLOCKED
+            - DELETED
+    ErrorDto:
+      type: object
+      required:
+        - errorCode
+        - errorDescription
+        - statusCode
+        - errors
+      properties:
+        errorCode:
+          type: string
+        errorDescription:
+          type: string
+        statusCode:
+          type: integer
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldErrorDto'
+
+    ClientPageResponseDto:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientResponseDto'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+    ClientUpdateRequestDto:
+      type: object
+      properties:
+        fullName:
+          type: string
+        citizenship:
+          type: string
+        clientType:
+          type: string
+        documentNumber:
+          type: string
+        documentSeries:
+          type: string
+        documentType:
+          type: string
+    ClientExistsResponse:
+      type: object
+      required:
+        - exists
+        - clientId
+        - status
+      properties:
+        exists:
+          type: boolean
+        clientId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - BLOCKED
+            - DELETED
+    FieldErrorDto:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+        message:
+          type: string
