@@ -40,7 +40,6 @@ public class ClientController implements ClientsApi {
     }
 
     @Override
-    @GetMapping("/{clientId}")
     public ResponseEntity<ClientResponseDto> getClientById(
             @PathVariable(value = "clientId") UUID clientId
     ) {
@@ -49,7 +48,6 @@ public class ClientController implements ClientsApi {
     }
 
     @Override
-    @PutMapping("/{clientId}")
     public ResponseEntity<ClientResponseDto> updateClientById(
             @PathVariable("clientId") UUID clientId,
             @Valid @RequestBody ClientUpdateRequestDto request
@@ -60,7 +58,6 @@ public class ClientController implements ClientsApi {
     }
 
     @Override
-    @DeleteMapping("/{clientId}")
     public ResponseEntity<Void> deleteClientById(
             @PathVariable(value = "clientId") UUID clientId
     ) {
@@ -69,7 +66,6 @@ public class ClientController implements ClientsApi {
     }
 
     @Override
-    @GetMapping("/{clientId}/exists")
     public ResponseEntity<ClientExistsResponse> existsByClientId(
             @PathVariable(value = "clientId") UUID clientId
     ) {
