@@ -191,19 +191,26 @@ components:
       properties:
         fullName:
           type: string
+          minLength: 1
         citizenship:
           type: string
+          minLength: 1
         clientType:
           type: string
+          minLength: 1
         documentNumber:
           type: string
+          minLength: 1
         documentSeries:
           type: string
+          minLength: 1
         documentType:
           type: string
+          minLength: 1
         mdmCode:
           type: integer
           format: int64
+          minimum: 1
     ClientResponseDto:
       type: object
       required:
@@ -266,16 +273,22 @@ components:
       properties:
         fullName:
           type: string
+          minLength: 1
         citizenship:
           type: string
+          minLength: 1
         clientType:
           type: string
+          minLength: 1
         documentNumber:
           type: string
+          minLength: 1
         documentSeries:
           type: string
+          minLength: 1
         documentType:
           type: string
+          minLength: 1
     ClientExistsResponse:
       type: object
       required:
