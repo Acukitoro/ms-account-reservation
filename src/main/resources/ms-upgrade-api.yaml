@@ -218,6 +218,7 @@ components:
         - mdmCode
         - fullName
         - status
+        - hasAccounts
       properties:
         id:
           type: string
@@ -233,6 +234,8 @@ components:
             - ACTIVE
             - BLOCKED
             - DELETED
+        hasAccounts:
+          type: boolean
     ErrorDto:
       type: object
       required:

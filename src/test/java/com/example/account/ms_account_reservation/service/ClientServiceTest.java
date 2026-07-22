@@ -113,6 +113,7 @@ class ClientServiceTest {
         ClientResponseDto result = service.getClientById(id);
 
         assertEquals(id, result.getId());
+        assertFalse(result.getHasAccounts());
     }
 
     @Test

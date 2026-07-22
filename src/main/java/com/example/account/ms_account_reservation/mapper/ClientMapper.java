@@ -30,6 +30,8 @@ public class ClientMapper {
         dto.setStatus(
                 ClientResponseDto.StatusEnum.fromValue(entity.getStatus().name())
         );
+        dto.setHasAccounts(false);
+
         return dto;
     }
 

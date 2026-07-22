@@ -1,6 +1,5 @@
 package com.example.account.ms_account_reservation.repository;
 
-import com.example.account.ms_account_reservation.dto.ClientUpdateRequestDto;
 import com.example.account.ms_account_reservation.model.ClientEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
