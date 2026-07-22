@@ -4,9 +4,12 @@ import com.example.account.ms_account_reservation.dto.ErrorDto;
 import com.example.account.ms_account_reservation.dto.FieldErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 
@@ -18,14 +21,8 @@ public class GlobalHandlerException {
     public ResponseEntity<ErrorDto> handleClientApiException(ClientApiException ex) {
 
         log.warn("Business error: {} - {}", ex.getErrorCode(), ex.getMessage());
-
-        ErrorDto error = new ErrorDto();
-        error.setErrorCode(ex.getErrorCode());
-        error.setErrorDescription(ex.getMessage());
-        error.setStatusCode(ex.getStatus());
-        error.setErrors(List.of());
-
-        return ResponseEntity.status(ex.getStatus()).body(error);
+        
+        return build(ex.getErrorCode(), ex.getMessage(), ex.getStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -44,26 +41,45 @@ public class GlobalHandlerException {
 
         log.warn("Validation error: {}", fieldErrors);
 
-        ErrorDto error = new ErrorDto();
-        error.setErrorCode("VALIDATION_ERROR");
-        error.setErrorDescription("Validation field");
-        error.setStatusCode(400);
-        error.setErrors(fieldErrors);
-
-        return ResponseEntity.badRequest().body(error);
+        return build("VALIDATION_ERROR",  "Validation field", 400, fieldErrors);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleUnknown(Exception ex) {
 
-        log.error("Unexpected error");
+        log.error("Unexpected error", ex);
+
+        return build("INTERNAL_ERROR", "Unexpected error", 500);
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ErrorDto> handleBadRequest(Exception ex) {
+
+        log.warn("Bad request: {}", ex.getMessage());
+
+        return build("BAD_REQUEST", "Malformed or invalid request", 400);
+    }
+
+    @ExceptionHandler({NoResourceFoundException.class})
+    public ResponseEntity<ErrorDto> handleNotFound(NoResourceFoundException ex) {
+
+        log.warn("No handler: {}", ex.getMessage());
+
+        return build("NOT_FOUND", "Resource not found", 404);
+    }
+
+    private ResponseEntity<ErrorDto> build(String errorCode, String description, int statusCode) {
+        return build(errorCode, description, statusCode, List.of());
+    }
+
+    private ResponseEntity<ErrorDto> build(String errorCode, String description, int statusCode, List<FieldErrorDto> errors) {
 
         ErrorDto error = new ErrorDto();
-        error.setErrorCode("INTERNAL_ERROR");
-        error.setErrorDescription("Unexpected error");
-        error.setStatusCode(500);
-        error.setErrors(List.of());
+        error.setErrorCode(errorCode);
+        error.setErrorDescription(description);
+        error.setStatusCode(statusCode);
+        error.setErrors(errors);
 
-        return ResponseEntity.status(500).body(error);
+        return ResponseEntity.status(statusCode).body(error);
     }
 }

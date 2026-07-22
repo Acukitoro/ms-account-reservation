@@ -121,6 +121,17 @@ class ClientControllerTest {
     }
 
     @Test
+    void getClientById_unknownRoute_returns404() throws Exception {
+
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/unknown/{clientId}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").exists())
+                .andExpect(jsonPath("$.statusCode").value(404));
+    }
+
+    @Test
     void getClients_whenExists_returns200() throws Exception {
 
         UUID id = UUID.randomUUID();
@@ -262,7 +273,9 @@ class ClientControllerTest {
                 """
                         {"fullName": "Test User", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode": null}""",
                 """
-                        {"fullName": "Test User", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode": -1}"""
+                        {"fullName": "Test User", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode": -1}""",
+                """
+                        {"fullName": "Test User", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode":}"""
         );
     }
 
