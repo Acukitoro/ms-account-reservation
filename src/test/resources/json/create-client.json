@@ -1,0 +1,9 @@
+{
+  "fullName": "Test User",
+  "citizenship": "RU",
+  "clientType": "Classic",
+  "documentNumber": "N12345",
+  "documentSeries": "S1",
+  "documentType": "ID",
+  "mdmCode": 10
+}

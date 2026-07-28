@@ -6,6 +6,7 @@ import com.example.account.ms_account_reservation.dto.ClientResponseDto;
 import com.example.account.ms_account_reservation.exception.ClientAlreadyExistsException;
 import com.example.account.ms_account_reservation.exception.ClientNotFoundException;
 import com.example.account.ms_account_reservation.service.ClientService;
+import com.example.account.ms_account_reservation.util.TestJsonReader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -49,9 +50,7 @@ class ClientControllerTest {
 
         mockMvc.perform(post("/api/v1/clients")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"fullName": "Test User", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode": 1}
-                                """))
+                        .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.fullName").value("Test User"))
@@ -66,9 +65,7 @@ class ClientControllerTest {
 
         mockMvc.perform(post("/api/v1/clients")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"fullName": "Test User", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode": 1}
-                                """))
+                        .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").exists())
                 .andExpect(jsonPath("$.statusCode").value(409));
@@ -176,9 +173,7 @@ class ClientControllerTest {
 
         mockMvc.perform(put("/api/v1/clients/{clientId}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {"fullName": "Updated Name", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID"}
-                        """))
+                .content(TestJsonReader.read("json/update-client.json")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.fullName").value("Updated Name"));
@@ -194,9 +189,7 @@ class ClientControllerTest {
 
         mockMvc.perform(put("/api/v1/clients/{clientId}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {"fullName": "Updated Name", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID"}
-                        """))
+                .content(TestJsonReader.read("json/update-client.json")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").exists())
                 .andExpect(jsonPath("$.statusCode").value(404));

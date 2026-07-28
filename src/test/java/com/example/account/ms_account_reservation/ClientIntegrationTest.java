@@ -3,6 +3,7 @@ package com.example.account.ms_account_reservation;
 import com.example.account.ms_account_reservation.model.ClientEntity;
 import com.example.account.ms_account_reservation.model.ClientStatus;
 import com.example.account.ms_account_reservation.repository.ClientRepository;
+import com.example.account.ms_account_reservation.util.TestJsonReader;
 import org.springframework.transaction.annotation.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,7 @@ class ClientIntegrationTest {
 
         mockMvc.perform(post("/api/v1/clients")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"fullName": "Test User", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode": 10}
-                                """))
+                        .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists());
 
@@ -61,15 +60,13 @@ class ClientIntegrationTest {
                 .documentNumber("N12345678")
                 .documentSeries("S2")
                 .documentType("ID")
-                .mdmCode(20L)
+                .mdmCode(10L)
                 .status(ClientStatus.ACTIVE)
                 .build());
 
         mockMvc.perform(post("/api/v1/clients")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"fullName": "Test Name", "citizenship": "RU", "clientType": "Classic", "documentNumber": "N12345", "documentSeries": "S1", "documentType": "ID", "mdmCode": 20}
-                                """))
+                        .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isConflict());
     }
 
