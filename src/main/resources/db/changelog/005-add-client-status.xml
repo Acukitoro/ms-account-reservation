@@ -6,6 +6,14 @@
            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
     
     <changeSet id="add-client-status" author="Acukitoro">
+
+        <preConditions>
+            <tableExists tableName="client"/>
+            <not>
+                <columnExists tableName="client" columnName="status"/>
+            </not>
+        </preConditions>
+
         <addColumn tableName="client">
             <column name="status" type="varchar(20)" defaultValue="ACTIVE">
                 <constraints nullable="false"/>
