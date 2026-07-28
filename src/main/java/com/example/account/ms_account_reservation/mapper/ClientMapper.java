@@ -3,42 +3,28 @@ package com.example.account.ms_account_reservation.mapper;
 import com.example.account.ms_account_reservation.dto.*;
 import com.example.account.ms_account_reservation.model.ClientEntity;
 import com.example.account.ms_account_reservation.model.ClientStatus;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.UUID;
 
-public class ClientMapper {
+@Mapper(componentModel = "spring")
+public interface ClientMapper {
 
-    public static ClientEntity toEntity(ClientRequestDto request) {
-        return ClientEntity.builder()
-                .fullName(request.getFullName())
-                .citizenship(request.getCitizenship())
-                .clientType(request.getClientType())
-                .documentNumber(request.getDocumentNumber())
-                .documentSeries(request.getDocumentSeries())
-                .documentType(request.getDocumentType())
-                .mdmCode(request.getMdmCode())
-                .build();
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    ClientEntity toEntity(ClientRequestDto request);
 
-    public static ClientResponseDto toDto(ClientEntity entity) {
-        ClientResponseDto dto = new ClientResponseDto();
-        dto.setId(entity.getId());
-        dto.setFullName(entity.getFullName());
-        dto.setMdmCode(entity.getMdmCode());
-        dto.setStatus(
-                ClientResponseDto.StatusEnum.fromValue(entity.getStatus().name())
-        );
-        dto.setHasAccounts(false);
+    @Mapping(target = "hasAccounts", constant = "false")
+    ClientResponseDto toDto(ClientEntity entity);
 
-        return dto;
-    }
-
-    public static ClientPageResponseDto toPageDto(Page<ClientEntity> page) {
+    default ClientPageResponseDto toPageDto(Page<ClientEntity> page) {
 
         List<ClientResponseDto> content = page.getContent().stream()
-                .map(ClientMapper::toDto)
+                .map(this::toDto)
                 .toList();
 
         ClientPageResponseDto dto = new ClientPageResponseDto();
@@ -51,16 +37,12 @@ public class ClientMapper {
         return dto;
     }
 
-    public static void updateEntity(ClientEntity entity ,ClientUpdateRequestDto request) {
-        entity.setFullName(request.getFullName());
-        entity.setCitizenship(request.getCitizenship());
-        entity.setClientType(request.getClientType());
-        entity.setDocumentNumber(request.getDocumentNumber());
-        entity.setDocumentSeries(request.getDocumentSeries());
-        entity.setDocumentType(request.getDocumentType());
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "mdmCode", ignore = true)
+    void updateEntity(@MappingTarget ClientEntity entity , ClientUpdateRequestDto request);
 
-    public static ClientExistsResponse toExistsDto(UUID id, ClientStatus status, boolean exists) {
+    default ClientExistsResponse toExistsDto(UUID id, ClientStatus status, boolean exists) {
         ClientExistsResponse dto = new ClientExistsResponse();
         dto.setExists(exists);
         dto.setClientId(id);

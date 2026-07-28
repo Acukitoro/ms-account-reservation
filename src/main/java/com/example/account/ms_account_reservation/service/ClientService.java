@@ -22,6 +22,7 @@ import java.util.UUID;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     public ClientResponseDto create(ClientRequestDto request) {
 
@@ -32,14 +33,14 @@ public class ClientService {
             throw new ClientAlreadyExistsException(request.getMdmCode());
         }
 
-        ClientEntity entity = ClientMapper.toEntity(request);
+        ClientEntity entity = clientMapper.toEntity(request);
         entity.setStatus(ClientStatus.ACTIVE);
 
         ClientEntity saved = clientRepository.save(entity);
 
         log.info("Client created successfully with id={}, mdmCode={}", saved.getId(), saved.getMdmCode());
 
-        return ClientMapper.toDto(saved);
+        return clientMapper.toDto(saved);
     }
 
     public ClientPageResponseDto getClients(Pageable pageable, String fullName, Long mdmCode) {
@@ -62,7 +63,7 @@ public class ClientService {
             page = clientRepository.findAll(pageable);
         }
 
-        return ClientMapper.toPageDto(page);
+        return clientMapper.toPageDto(page);
     }
 
     public ClientResponseDto getClientById(UUID id) {
@@ -75,7 +76,7 @@ public class ClientService {
                     return new ClientNotFoundException(id);
                 });
 
-        return ClientMapper.toDto(entity);
+        return clientMapper.toDto(entity);
     }
 
     public ClientResponseDto updateClientById(UUID id, ClientUpdateRequestDto request) {
@@ -88,13 +89,13 @@ public class ClientService {
                     return new ClientNotFoundException(id);
                 });
 
-        ClientMapper.updateEntity(entity, request);
+        clientMapper.updateEntity(entity, request);
 
         ClientEntity updated = clientRepository.save(entity);
 
         log.info("Client updated successfully with id={}", id);
 
-        return ClientMapper.toDto(updated);
+        return clientMapper.toDto(updated);
     }
 
     public void deleteClientById(UUID id) {
@@ -120,12 +121,12 @@ public class ClientService {
 
         if (entityOpt.isEmpty()) {
             log.info("Client exists check id={}, exists=false", id);
-            return ClientMapper.toExistsDto(id, null, false);
+            return clientMapper.toExistsDto(id, null, false);
         }
         ClientEntity entity = entityOpt.get();
 
         log.info("Client exists check id={}, exists=true", id);
 
-        return ClientMapper.toExistsDto(id, entity.getStatus(), true);
+        return clientMapper.toExistsDto(id, entity.getStatus(), true);
     }
 }

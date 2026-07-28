@@ -6,6 +6,8 @@ import com.example.account.ms_account_reservation.dto.ClientResponseDto;
 import com.example.account.ms_account_reservation.dto.ClientUpdateRequestDto;
 import com.example.account.ms_account_reservation.exception.ClientAlreadyExistsException;
 import com.example.account.ms_account_reservation.exception.ClientNotFoundException;
+import com.example.account.ms_account_reservation.mapper.ClientMapper;
+import com.example.account.ms_account_reservation.mapper.ClientMapperImpl;
 import com.example.account.ms_account_reservation.model.ClientEntity;
 import com.example.account.ms_account_reservation.model.ClientStatus;
 import com.example.account.ms_account_reservation.repository.ClientRepository;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -28,6 +31,9 @@ class ClientServiceTest {
 
     @Mock
     ClientRepository repository;
+
+    @Spy
+    ClientMapper clientMapper = new ClientMapperImpl();
 
     @InjectMocks
     ClientService service;
