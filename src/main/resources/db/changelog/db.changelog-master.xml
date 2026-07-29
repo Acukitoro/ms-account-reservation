@@ -9,5 +9,6 @@
     <include file="db/changelog/002-load-account-status-data.xml"/>
     <include file="db/changelog/003-create-client-table.xml"/>
     <include file="db/changelog/004-create-account-table-and-fk.xml"/>
+    <include file="db/changelog/005-add-client-status.xml"/>
 
 </databaseChangeLog>

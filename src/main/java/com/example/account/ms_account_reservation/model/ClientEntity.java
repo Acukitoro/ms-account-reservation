@@ -39,4 +39,8 @@ public class ClientEntity {
 
     @Column(name = "mdm_code")
     private Long mdmCode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private ClientStatus status;
 }
