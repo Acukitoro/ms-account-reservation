@@ -24,3 +24,7 @@ management:
     web:
       exposure:
         include: health, threaddump
+
+server:
+  servlet:
+    context-path: ${API_PREFIX}

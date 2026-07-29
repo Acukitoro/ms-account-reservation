@@ -38,7 +38,7 @@ class ClientIntegrationTest {
     @Test
     void createClient_persistToDatabase_returns201() throws Exception {
 
-        mockMvc.perform(post("/api/v1/clients")
+        mockMvc.perform(post("/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isCreated())
@@ -64,7 +64,7 @@ class ClientIntegrationTest {
                 .status(ClientStatus.ACTIVE)
                 .build());
 
-        mockMvc.perform(post("/api/v1/clients")
+        mockMvc.perform(post("/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isConflict());
@@ -85,7 +85,7 @@ class ClientIntegrationTest {
                 .build());
         UUID id = existing.getId();
 
-        mockMvc.perform(delete("/api/v1/clients/{clientId}", id))
+        mockMvc.perform(delete("/clients/{clientId}", id))
                 .andExpect(status().isNoContent());
 
         ClientEntity afterDeleted = repository.findClientById(id).orElseThrow();

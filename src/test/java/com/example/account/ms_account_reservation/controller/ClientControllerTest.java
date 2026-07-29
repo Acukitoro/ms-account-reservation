@@ -48,7 +48,7 @@ class ClientControllerTest {
         when(service.create(any()))
                 .thenReturn(client);
 
-        mockMvc.perform(post("/api/v1/clients")
+        mockMvc.perform(post("/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isCreated())
@@ -63,7 +63,7 @@ class ClientControllerTest {
         when(service.create(any()))
                 .thenThrow(new ClientAlreadyExistsException(1L));
 
-        mockMvc.perform(post("/api/v1/clients")
+        mockMvc.perform(post("/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestJsonReader.read("json/create-client.json")))
                 .andExpect(status().isConflict())
@@ -75,7 +75,7 @@ class ClientControllerTest {
     @MethodSource("invalidPostBodies")
     void createClient_whenInvalidBodies_returns400(String body) throws Exception {
 
-        mockMvc.perform(post("/api/v1/clients")
+        mockMvc.perform(post("/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest())
@@ -96,7 +96,7 @@ class ClientControllerTest {
         when(service.getClientById(id))
                 .thenReturn(client);
 
-        mockMvc.perform(get("/api/v1/clients/{clientId}", id))
+        mockMvc.perform(get("/clients/{clientId}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.fullName").value("Test User"))
@@ -111,7 +111,7 @@ class ClientControllerTest {
         when(service.getClientById(id))
                 .thenThrow(new ClientNotFoundException(id));
 
-        mockMvc.perform(get("/api/v1/clients/{clientId}", id))
+        mockMvc.perform(get("/clients/{clientId}", id))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").exists())
                 .andExpect(jsonPath("$.statusCode").value(404));
@@ -122,7 +122,7 @@ class ClientControllerTest {
 
         UUID id = UUID.randomUUID();
 
-        mockMvc.perform(get("/api/v1/unknown/{clientId}", id))
+        mockMvc.perform(get("/unknown/{clientId}", id))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").exists())
                 .andExpect(jsonPath("$.statusCode").value(404));
@@ -148,7 +148,7 @@ class ClientControllerTest {
         when(service.getClients(any(), any(), any()))
                 .thenReturn(page);
 
-        mockMvc.perform(get("/api/v1/clients"))
+        mockMvc.perform(get("/clients"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content.length()").value(1))
@@ -171,7 +171,7 @@ class ClientControllerTest {
         when(service.updateClientById(any(), any()))
                 .thenReturn(client);
 
-        mockMvc.perform(put("/api/v1/clients/{clientId}", id)
+        mockMvc.perform(put("/clients/{clientId}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestJsonReader.read("json/update-client.json")))
                 .andExpect(status().isOk())
@@ -187,7 +187,7 @@ class ClientControllerTest {
         when(service.updateClientById(any(), any()))
                 .thenThrow(new ClientNotFoundException(id));
 
-        mockMvc.perform(put("/api/v1/clients/{clientId}", id)
+        mockMvc.perform(put("/clients/{clientId}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestJsonReader.read("json/update-client.json")))
                 .andExpect(status().isNotFound())
@@ -200,7 +200,7 @@ class ClientControllerTest {
     void updateClientById_whenInvalidBodies_returns400(String body) throws Exception {
         UUID id = UUID.randomUUID();
 
-        mockMvc.perform(put("/api/v1/clients/{clientId}", id)
+        mockMvc.perform(put("/clients/{clientId}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andExpect(status().isBadRequest())
@@ -213,7 +213,7 @@ class ClientControllerTest {
 
         UUID id = UUID.randomUUID();
 
-        mockMvc.perform(delete("/api/v1/clients/{clientId}", id))
+        mockMvc.perform(delete("/clients/{clientId}", id))
                 .andExpect(status().isNoContent());
 
         verify(service).deleteClientById(id);
@@ -225,7 +225,7 @@ class ClientControllerTest {
 
         doThrow(new ClientNotFoundException(id)).when(service).deleteClientById(id);
 
-        mockMvc.perform(delete("/api/v1/clients/{clientId}", id))
+        mockMvc.perform(delete("/clients/{clientId}", id))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").exists())
                 .andExpect(jsonPath("$.statusCode").value(404));
@@ -243,7 +243,7 @@ class ClientControllerTest {
         when(service.existsByClientId(id))
                 .thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/clients/{clientId}/exists", id))
+        mockMvc.perform(get("/clients/{clientId}/exists", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.exists").value(true))
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
