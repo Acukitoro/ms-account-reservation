@@ -28,3 +28,8 @@ management:
 server:
   servlet:
     context-path: ${API_PREFIX}
+
+app:
+  currency-client:
+    base-url: ${CURRENCY_BASE_URL:https://api.exchangerate.host}
+    api-key: ${CURRENCY_API_KEY}
