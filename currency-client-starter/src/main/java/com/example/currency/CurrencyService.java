@@ -1,30 +1,32 @@
 package com.example.currency;
 
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
 import java.math.BigDecimal;
 
 public class CurrencyService {
 
-    private final RestTemplate restTemplate;
+    private final CurrencyClient currencyClient;
     private final CurrencyProperties properties;
 
-    public CurrencyService(RestTemplate restTemplate, CurrencyProperties properties) {
-        this.restTemplate = restTemplate;
+    public CurrencyService(CurrencyClient currencyClient, CurrencyProperties properties) {
+        this.currencyClient = currencyClient;
         this.properties = properties;
     }
 
+    @Retryable(
+            retryFor = feign.FeignException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 1000, multiplier = 2)
+    )
     public BigDecimal getExchangeRate(String from, String to) {
 
-        String url = UriComponentsBuilder.fromHttpUrl(properties.baseUrl())
-                .path("/convert")
-                .queryParam("access_key", properties.apiKey())
-                .queryParam("from", from)
-                .queryParam("to", to)
-                .toUriString();
+        if(from.equals(to)) {
+            return BigDecimal.ONE;
+        }
 
-        ConvertResponse response = restTemplate.getForObject(url, ConvertResponse.class);
+        ConvertResponse response = currencyClient.convert(properties.apiKey(), from, to);
 
         if (response == null || !response.success()) {
             throw new CurrencyClientException("Currency API вернул неуспешный ответ: " + from + " -> " + to);
