@@ -11,19 +11,7 @@
 	<artifactId>ms-account-app</artifactId>
 	<name>ms-account-app</name>
 	<description>Demo project for Spring Boot</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+
 	<dependencies>
 
 		<dependency>

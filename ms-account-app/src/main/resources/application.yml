@@ -42,3 +42,4 @@ app:
     base-url: ${CURRENCY_BASE_URL}
     api-key: ${CURRENCY_API_KEY}
     enabled: ${CURRENCY_ENABLED}
+    health-check-enabled: ${CURRENCY_HEALTH_CHECK_ENABLED}
