@@ -1,5 +1,6 @@
 package com.example.currency;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -19,8 +20,8 @@ public class CurrencyClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CurrencyService currencyService(CurrencyClient currencyClient, CurrencyProperties properties) {
-        return new CurrencyService(currencyClient, properties);
+    public CurrencyService currencyService(CurrencyClient currencyClient, CurrencyProperties properties, MeterRegistry meterRegistry) {
+        return new CurrencyService(currencyClient, properties, meterRegistry);
     }
 
     @Bean

@@ -25,13 +25,20 @@ spring:
             connect-timeout: 3000
             read-timeout: 3000
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: false
+
 management:
   server:
     port: ${SERVER_PORT}
   endpoints:
     web:
       exposure:
-        include: health, threaddump
+        include: health, threaddump, prometheus
 
 server:
   servlet:
@@ -47,3 +54,5 @@ app:
       max-attempts: ${CURRENCY_RETRY_MAX_ATTEMPTS}
       delay: ${CURRENCY_RETRY_DELAY}
       multiplier: ${CURRENCY_RETRY_MULTIPLIER}
+    cache:
+      ttl-minutes: ${CACHE_TTL_MINUTES}
