@@ -17,8 +17,10 @@ public class CurrencyService {
 
     @Retryable(
             retryFor = feign.FeignException.class,
-            maxAttempts = 3,
-            backoff = @Backoff(delay = 1000, multiplier = 2)
+            maxAttemptsExpression = "${app.currency-client.retry.max-attempts:3}",
+            backoff = @Backoff(
+                    delayExpression = "${app.currency-client.retry.delay:1000}",
+                    multiplierExpression = "${app.currency-client.retry.multiplier:2}")
     )
     public BigDecimal getExchangeRate(String from, String to) {
 
