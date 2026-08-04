@@ -17,6 +17,14 @@ spring:
   liquibase:
     change-log: db/changelog/db.changelog-master.xml
 
+  cloud:
+    openfeign:
+      client:
+        config:
+          currency-client:
+            connect-timeout: 3000
+            read-timeout: 3000
+
 management:
   server:
     port: ${SERVER_PORT}
@@ -28,3 +36,14 @@ management:
 server:
   servlet:
     context-path: ${API_PREFIX}
+
+app:
+  currency-client:
+    base-url: ${CURRENCY_BASE_URL}
+    api-key: ${CURRENCY_API_KEY}
+    enabled: ${CURRENCY_ENABLED}
+    health-check-enabled: ${CURRENCY_HEALTH_CHECK_ENABLED}
+    retry:
+      max-attempts: ${CURRENCY_RETRY_MAX_ATTEMPTS}
+      delay: ${CURRENCY_RETRY_DELAY}
+      multiplier: ${CURRENCY_RETRY_MULTIPLIER}
