@@ -1,5 +1,6 @@
 package com.example.currency;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ class CurrencyServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new CurrencyService(currencyClient, properties);
+        service = new CurrencyService(currencyClient, properties, new CurrencyMetricsService(new SimpleMeterRegistry()));
     }
 
     @Test
