@@ -23,17 +23,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Testcontainers
-class CurrencyCachingIntegrationTest {
-
-    @Container
-    static GenericContainer<?> redis = new GenericContainer<>("redis:7").withExposedPorts(6379);
-
-    @DynamicPropertySource
-    static void redisProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.redis.host", redis::getHost);
-        registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
-    }
+class CurrencyCachingIntegrationTest extends AbstractRedisIntegrationTest{
 
     @MockitoBean
     CurrencyClient currencyClient;

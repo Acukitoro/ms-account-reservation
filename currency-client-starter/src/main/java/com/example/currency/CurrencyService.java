@@ -12,14 +12,12 @@ public class CurrencyService {
 
     private final CurrencyClient currencyClient;
     private final CurrencyProperties properties;
-    private final Counter apiRequestCounter;
+    private final CurrencyMetricsService metricsService;
 
-    public CurrencyService(CurrencyClient currencyClient, CurrencyProperties properties, MeterRegistry meterRegistry) {
+    public CurrencyService(CurrencyClient currencyClient, CurrencyProperties properties, CurrencyMetricsService metricsService) {
         this.currencyClient = currencyClient;
         this.properties = properties;
-        this.apiRequestCounter = Counter.builder("currency.exchange.rate.requests")
-                .description("Число вызовов внешнего API курсов")
-                .register(meterRegistry);
+        this.metricsService = metricsService;
     }
 
     @Retryable(
@@ -36,7 +34,7 @@ public class CurrencyService {
             return BigDecimal.ONE;
         }
 
-        apiRequestCounter.increment();
+        metricsService.recordApiCall();
 
         ConvertResponse response = currencyClient.convert(properties.apiKey(), from, to);
 

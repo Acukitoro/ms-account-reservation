@@ -24,7 +24,7 @@ class CurrencyServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new CurrencyService(currencyClient, properties, new SimpleMeterRegistry());
+        service = new CurrencyService(currencyClient, properties, new CurrencyMetricsService(new SimpleMeterRegistry()));
     }
 
     @Test

@@ -20,8 +20,8 @@ public class CurrencyClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CurrencyService currencyService(CurrencyClient currencyClient, CurrencyProperties properties, MeterRegistry meterRegistry) {
-        return new CurrencyService(currencyClient, properties, meterRegistry);
+    public CurrencyService currencyService(CurrencyClient currencyClient, CurrencyProperties properties, CurrencyMetricsService metricsService) {
+        return new CurrencyService(currencyClient, properties, metricsService);
     }
 
     @Bean
@@ -30,5 +30,10 @@ public class CurrencyClientAutoConfiguration {
     @ConditionalOnProperty(prefix = "app.currency-client", name = "health-check-enabled", havingValue = "true")
     public CurrencyHealthIndicator currencyHealthIndicator(CurrencyClient currencyClient, CurrencyProperties properties) {
         return new CurrencyHealthIndicator(currencyClient, properties);
+    }
+
+    @Bean
+    public CurrencyMetricsService metricsService(MeterRegistry meterRegistry) {
+        return new CurrencyMetricsService(meterRegistry);
     }
 }
