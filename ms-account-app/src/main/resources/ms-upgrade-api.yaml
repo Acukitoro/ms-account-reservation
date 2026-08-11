@@ -174,6 +174,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientExistsResponse'
+  /clients/{clientId}/summary:
+    get:
+      summary: Get exchange rates using client ID
+      operationId: getClientSummary
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful get exchange rate by client ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientSummaryDto'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '504':
+          description: Timeout error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+
+
 
 
 components:
@@ -320,3 +353,15 @@ components:
           type: string
         message:
           type: string
+    ClientSummaryDto:
+      type: object
+      required:
+        - client
+        - rates
+      properties:
+        client:
+          $ref: '#/components/schemas/ClientResponseDto'
+        rates:
+          type: object
+          additionalProperties:
+            type: number

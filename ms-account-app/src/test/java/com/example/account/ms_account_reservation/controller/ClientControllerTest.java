@@ -5,6 +5,7 @@ import com.example.account.ms_account_reservation.dto.ClientPageResponseDto;
 import com.example.account.ms_account_reservation.dto.ClientResponseDto;
 import com.example.account.ms_account_reservation.exception.ClientAlreadyExistsException;
 import com.example.account.ms_account_reservation.exception.ClientNotFoundException;
+import com.example.account.ms_account_reservation.service.ClientReportService;
 import com.example.account.ms_account_reservation.service.ClientService;
 import com.example.account.ms_account_reservation.util.TestJsonReader;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class ClientControllerTest {
 
     @MockitoBean
     ClientService service;
+
+    @MockitoBean
+    ClientReportService reportService;
 
     @Test
     void createClient_whenAllArgumentsValid_returns201() throws Exception {
