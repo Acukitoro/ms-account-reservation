@@ -142,7 +142,7 @@
                             <generatorName>spring</generatorName>
 
                             <output>
-                                ../target/generated-sources/openapi
+                                ${project.build.directory}/generated-sources/openapi
                             </output>
 
                             <apiPackage>

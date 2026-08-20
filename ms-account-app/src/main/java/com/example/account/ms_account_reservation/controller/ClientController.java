@@ -2,6 +2,7 @@ package com.example.account.ms_account_reservation.controller;
 
 import com.example.account.ms_account_reservation.api.ClientsApi;
 import com.example.account.ms_account_reservation.dto.*;
+import com.example.account.ms_account_reservation.service.ClientReportService;
 import com.example.account.ms_account_reservation.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class ClientController implements ClientsApi {
 
     private final ClientService clientService;
+    private final ClientReportService reportService;
 
     @Override
     public ResponseEntity<ClientResponseDto> createClient(
@@ -69,6 +71,14 @@ public class ClientController implements ClientsApi {
             @PathVariable(value = "clientId") UUID clientId
     ) {
         ClientExistsResponse response = clientService.existsByClientId(clientId);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Override
+    public ResponseEntity<ClientSummaryDto> getClientSummary(
+            @PathVariable(value = "clientId") UUID id
+    ) {
+        ClientSummaryDto response = reportService.getClientSummary(id);
         return ResponseEntity.status(200).body(response);
     }
 }

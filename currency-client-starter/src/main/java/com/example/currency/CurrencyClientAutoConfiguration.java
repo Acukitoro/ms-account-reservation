@@ -20,8 +20,8 @@ public class CurrencyClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CurrencyService currencyService(CurrencyClient currencyClient, CurrencyProperties properties, CurrencyMetricsService metricsService) {
-        return new CurrencyService(currencyClient, properties, metricsService);
+    public CurrencyService currencyService(CurrencyClient currencyClient, CurrencyProperties properties, CurrencyMetricsService currencyMetricsService) {
+        return new CurrencyService(currencyClient, properties, currencyMetricsService);
     }
 
     @Bean
@@ -33,7 +33,7 @@ public class CurrencyClientAutoConfiguration {
     }
 
     @Bean
-    public CurrencyMetricsService metricsService(MeterRegistry meterRegistry) {
+    public CurrencyMetricsService currencyMetricsService(MeterRegistry meterRegistry) {
         return new CurrencyMetricsService(meterRegistry);
     }
 }
