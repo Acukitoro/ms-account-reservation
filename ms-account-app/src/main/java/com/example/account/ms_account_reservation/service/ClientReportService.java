@@ -4,7 +4,6 @@ import com.example.account.ms_account_reservation.dto.ClientResponseDto;
 import com.example.account.ms_account_reservation.dto.ClientSummaryDto;
 import com.example.account.ms_account_reservation.exception.ClientApiException;
 import com.example.account.ms_account_reservation.exception.ReportTimeoutException;
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +24,7 @@ public class ClientReportService {
     private final Executor currencyExecutor;
     private final ClientService clientService;
     private final ExchangeRateService exchangeRateService;
-    private final MeterRegistry meterRegistry;
+    private final MetricsService metricsService;
 
     @Value("${app.async.timeout-seconds}")
     private int timeoutSeconds;
@@ -33,17 +32,17 @@ public class ClientReportService {
     public ClientSummaryDto getClientSummary(UUID id) {
 
         CompletableFuture<ClientResponseDto> clientF =  CompletableFuture.supplyAsync(() -> {
-            meterRegistry.counter("currency.async.tasks").increment();
+            metricsService.recordAsyncTask();
             return clientService.getClientById(id);
         }, currencyExecutor);
 
         CompletableFuture<BigDecimal> usdF = CompletableFuture.supplyAsync(() -> {
-            meterRegistry.counter("currency.async.tasks").increment();
+            metricsService.recordAsyncTask();
             return exchangeRateService.getRate("USD", "RUB");
         }, currencyExecutor);
 
         CompletableFuture<BigDecimal> eurF = CompletableFuture.supplyAsync(() -> {
-            meterRegistry.counter("currency.async.tasks").increment();
+            metricsService.recordAsyncTask();
             return exchangeRateService.getRate("EUR", "RUB");
         }, currencyExecutor);
 

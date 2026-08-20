@@ -2,7 +2,6 @@ package com.example.account.ms_account_reservation.service;
 
 import com.example.account.ms_account_reservation.dto.ClientResponseDto;
 import com.example.account.ms_account_reservation.dto.ClientSummaryDto;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ClientReportServiceTest {
@@ -29,12 +28,15 @@ class ClientReportServiceTest {
     @Mock
     ExchangeRateService exchangeRateService;
 
+    @Mock
+    MetricsService metricsService;
+
     Executor executor = Executors.newFixedThreadPool(4);
     ClientReportService reportService;
 
     @BeforeEach
     void setUp() {
-        reportService = new ClientReportService(executor, clientService, exchangeRateService, new SimpleMeterRegistry());
+        reportService = new ClientReportService(executor, clientService, exchangeRateService, metricsService);
         ReflectionTestUtils.setField(reportService, "timeoutSeconds", 3);
     }
 
@@ -64,6 +66,8 @@ class ClientReportServiceTest {
         assertEquals(
                 Map.of("USD/RUB", new BigDecimal("80.1"), "EUR/RUB", new BigDecimal("90.6")),
                 result.getRates());
+
+        verify(metricsService, times(3)).recordAsyncTask();
     }
 
     @Test
