@@ -41,10 +41,10 @@ public class ClientController implements ClientsApi {
     }
 
     @Override
-    public ResponseEntity<ClientResponseDto> getClientById(
+    public ResponseEntity<ClientDetailsResponseDto> getClientById(
             @PathVariable(value = "clientId") UUID clientId
     ) {
-        ClientResponseDto response = clientService.getClientById(clientId);
+        ClientDetailsResponseDto response = clientService.getClientById(clientId);
         return ResponseEntity.status(200).body(response);
     }
 

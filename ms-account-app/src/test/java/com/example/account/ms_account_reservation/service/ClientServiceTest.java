@@ -1,13 +1,12 @@
 package com.example.account.ms_account_reservation.service;
 
-import com.example.account.ms_account_reservation.dto.ClientExistsResponse;
-import com.example.account.ms_account_reservation.dto.ClientRequestDto;
-import com.example.account.ms_account_reservation.dto.ClientResponseDto;
-import com.example.account.ms_account_reservation.dto.ClientUpdateRequestDto;
+import com.example.account.ms_account_reservation.dto.*;
 import com.example.account.ms_account_reservation.exception.ClientAlreadyExistsException;
 import com.example.account.ms_account_reservation.exception.ClientNotFoundException;
 import com.example.account.ms_account_reservation.mapper.ClientMapper;
 import com.example.account.ms_account_reservation.mapper.ClientMapperImpl;
+import com.example.account.ms_account_reservation.model.AccountEntity;
+import com.example.account.ms_account_reservation.model.AccountStatusEntity;
 import com.example.account.ms_account_reservation.model.ClientEntity;
 import com.example.account.ms_account_reservation.model.ClientStatus;
 import com.example.account.ms_account_reservation.repository.ClientRepository;
@@ -18,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -116,10 +116,48 @@ class ClientServiceTest {
         when(repository.findById(id))
                 .thenReturn(Optional.of(existingClient));
 
-        ClientResponseDto result = service.getClientById(id);
+        ClientDetailsResponseDto result = service.getClientById(id);
 
         assertEquals(id, result.getId());
         assertFalse(result.getHasAccounts());
+    }
+
+    @Test
+    void getClientById_whenHasAccounts_returnsClientWithAccounts() {
+
+        UUID id = UUID.randomUUID();
+        UUID accountId = UUID.randomUUID();
+
+        AccountStatusEntity accountStatus = AccountStatusEntity.builder()
+                .id(1)
+                .name("NEW")
+                .description("New account")
+                .build();
+
+        AccountEntity account = AccountEntity.builder()
+                .id(accountId)
+                .status(accountStatus)
+                .accountType("Deposit")
+                .currencyCode("USD")
+                .build();
+
+        ClientEntity existingClient = ClientEntity.builder()
+                .id(id)
+                .fullName("Test User")
+                .mdmCode(12L)
+                .status(ClientStatus.ACTIVE)
+                .accounts(List.of(account))
+                .build();
+
+        when(repository.findById(id))
+                .thenReturn(Optional.of(existingClient));
+
+        ClientDetailsResponseDto result = service.getClientById(id);
+
+        assertTrue(result.getHasAccounts());
+        assertEquals(1, result.getAccounts().size());
+        assertEquals("Deposit", result.getAccounts().getFirst().getAccountType());
+        assertEquals("NEW", result.getAccounts().getFirst().getStatus().getName());
     }
 
     @Test

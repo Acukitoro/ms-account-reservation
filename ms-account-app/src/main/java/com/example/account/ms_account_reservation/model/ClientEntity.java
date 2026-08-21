@@ -3,6 +3,7 @@ package com.example.account.ms_account_reservation.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -43,4 +44,7 @@ public class ClientEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ClientStatus status;
+
+    @OneToMany(mappedBy = "client")
+    private List<AccountEntity> accounts;
 }

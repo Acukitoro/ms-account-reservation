@@ -3,6 +3,8 @@ package com.example.account.ms_account_reservation.mapper;
 import com.example.account.ms_account_reservation.dto.*;
 import com.example.account.ms_account_reservation.model.ClientEntity;
 import com.example.account.ms_account_reservation.model.ClientStatus;
+import com.example.account.ms_account_reservation.model.AccountEntity;
+import com.example.account.ms_account_reservation.model.AccountStatusEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -16,9 +18,10 @@ public interface ClientMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "accounts", ignore = true)
     ClientEntity toEntity(ClientRequestDto request);
 
-    @Mapping(target = "hasAccounts", constant = "false")
+    @Mapping(target="hasAccounts", expression="java(hasAccounts(entity))")
     ClientResponseDto toDto(ClientEntity entity);
 
     default ClientPageResponseDto toPageDto(Page<ClientEntity> page) {
@@ -40,6 +43,7 @@ public interface ClientMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "mdmCode", ignore = true)
+    @Mapping(target = "accounts", ignore = true)
     void updateEntity(@MappingTarget ClientEntity entity , ClientUpdateRequestDto request);
 
     default ClientExistsResponse toExistsDto(UUID id, ClientStatus status, boolean exists) {
@@ -53,4 +57,15 @@ public interface ClientMapper {
 
         return dto;
     }
+    @Mapping(target="hasAccounts", expression="java(hasAccounts(entity))")
+    ClientDetailsResponseDto toDetailsDto(ClientEntity entity);
+
+    AccountDto toAccountDto(AccountEntity account);
+
+    AccountStatusDto toAccountStatusDto(AccountStatusEntity status);
+
+    default boolean hasAccounts(ClientEntity entity) {
+        return entity.getAccounts() != null && !entity.getAccounts().isEmpty();
+    }
+
 }
