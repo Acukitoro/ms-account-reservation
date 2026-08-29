@@ -373,6 +373,8 @@ components:
         - accountType
         - currencyCode
         - status
+        - accountNumber
+        - balance
       properties:
         id:
           type: string
@@ -383,6 +385,10 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/AccountStatusDto'
+        accountNumber:
+          type: string
+        balance:
+          type: number
     AccountStatusDto:
       type: object
       required:

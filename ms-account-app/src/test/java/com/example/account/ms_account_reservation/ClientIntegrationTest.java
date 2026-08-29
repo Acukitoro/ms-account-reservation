@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,6 +70,8 @@ class ClientIntegrationTest {
                 .status(status)
                 .accountType("Deposit")
                 .currencyCode("USD")
+                .accountNumber("0012345")
+                .balance(new BigDecimal("120.00"))
                 .build());
 
         return client;
@@ -146,7 +149,9 @@ class ClientIntegrationTest {
                 .andExpect(jsonPath("$.hasAccounts").value(true))
                 .andExpect(jsonPath("$.accounts", hasSize(1)))
                 .andExpect(jsonPath("$.accounts[0].currencyCode").value("USD"))
-                .andExpect(jsonPath("$.accounts[0].status.name").value("NEW"));
+                .andExpect(jsonPath("$.accounts[0].status.name").value("NEW"))
+                .andExpect(jsonPath("$.accounts[0].accountNumber").value("0012345"))
+                .andExpect(jsonPath("$.accounts[0].balance").value(120.00));
     }
 
     @Test
@@ -154,7 +159,7 @@ class ClientIntegrationTest {
 
         AccountStatusEntity status = accountStatusRepository.findById(1).orElseThrow();
 
-        for(long i = 1; i <= 3; i++) {
+        for (long i = 1; i <= 3; i++) {
             saveClientWithAccount(100 + i, status);
         }
 

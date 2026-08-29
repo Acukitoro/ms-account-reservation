@@ -8,6 +8,7 @@ import com.example.account.ms_account_reservation.model.AccountStatusEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface ClientMapper {
     @Mapping(target = "accounts", ignore = true)
     ClientEntity toEntity(ClientRequestDto request);
 
-    @Mapping(target="hasAccounts", expression="java(hasAccounts(entity))")
+    @Mapping(target="hasAccounts", source = "entity", qualifiedByName = "hasAccounts")
     ClientResponseDto toDto(ClientEntity entity);
 
     default ClientPageResponseDto toPageDto(Page<ClientEntity> page) {
@@ -57,13 +58,14 @@ public interface ClientMapper {
 
         return dto;
     }
-    @Mapping(target="hasAccounts", expression="java(hasAccounts(entity))")
+    @Mapping(target="hasAccounts", source = "entity", qualifiedByName = "hasAccounts")
     ClientDetailsResponseDto toDetailsDto(ClientEntity entity);
 
     AccountDto toAccountDto(AccountEntity account);
 
     AccountStatusDto toAccountStatusDto(AccountStatusEntity status);
 
+    @Named("hasAccounts")
     default boolean hasAccounts(ClientEntity entity) {
         return entity.getAccounts() != null && !entity.getAccounts().isEmpty();
     }
