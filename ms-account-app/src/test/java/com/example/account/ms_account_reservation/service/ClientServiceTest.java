@@ -113,7 +113,7 @@ class ClientServiceTest {
                 .status(ClientStatus.ACTIVE)
                 .build();
 
-        when(repository.findById(id))
+        when(repository.findWithAccountsById(id))
                 .thenReturn(Optional.of(existingClient));
 
         ClientDetailsResponseDto result = service.getClientById(id);
@@ -149,7 +149,7 @@ class ClientServiceTest {
                 .accounts(List.of(account))
                 .build();
 
-        when(repository.findById(id))
+        when(repository.findWithAccountsById(id))
                 .thenReturn(Optional.of(existingClient));
 
         ClientDetailsResponseDto result = service.getClientById(id);
@@ -165,7 +165,7 @@ class ClientServiceTest {
 
         UUID id = UUID.randomUUID();
 
-        when(repository.findById(id))
+        when(repository.findWithAccountsById(id))
                 .thenReturn(Optional.empty());
 
         assertThrows(ClientNotFoundException.class, () -> service.getClientById(id));

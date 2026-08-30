@@ -8,10 +8,18 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
-    show-sql: true
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
   liquibase:
     change-log: db/changelog/db.changelog-master.xml
 
 app:
   currency-client:
     enabled: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
