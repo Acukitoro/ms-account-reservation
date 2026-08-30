@@ -6,8 +6,9 @@ spring:
     password:
   jpa:
     hibernate:
-      auto-ddl: none
+      ddl-auto: validate
     open-in-view: false
+    show-sql: true
   liquibase:
     change-log: db/changelog/db.changelog-master.xml
 

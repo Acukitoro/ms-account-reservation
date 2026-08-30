@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
@@ -43,6 +44,7 @@ public class ClientService {
         return clientMapper.toDto(saved);
     }
 
+    @Transactional(readOnly = true)
     public ClientPageResponseDto getClients(Pageable pageable, String fullName, Long mdmCode) {
 
         log.info("Fetching clients page={}, size={}, fullName={}, mdmCode={}",
@@ -66,7 +68,8 @@ public class ClientService {
         return clientMapper.toPageDto(page);
     }
 
-    public ClientResponseDto getClientById(UUID id) {
+    @Transactional(readOnly = true)
+    public ClientDetailsResponseDto getClientById(UUID id) {
 
         log.info("Fetching client by id={}", id);
 
@@ -76,6 +79,14 @@ public class ClientService {
                     return new ClientNotFoundException(id);
                 });
 
+        return clientMapper.toDetailsDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public ClientResponseDto getClientResponseById(UUID id) {
+
+        ClientEntity entity = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id));
         return clientMapper.toDto(entity);
     }
 

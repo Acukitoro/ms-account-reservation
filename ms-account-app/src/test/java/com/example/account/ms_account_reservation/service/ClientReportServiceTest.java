@@ -51,7 +51,7 @@ class ClientReportServiceTest {
         dto.setMdmCode(3L);
         dto.setStatus(ClientResponseDto.StatusEnum.ACTIVE);
 
-        when(clientService.getClientById(id))
+        when(clientService.getClientResponseById(id))
                 .thenReturn(dto);
 
         when(exchangeRateService.getRate("USD", "RUB"))
@@ -97,7 +97,7 @@ class ClientReportServiceTest {
                     return new BigDecimal("90.6");
                 });
 
-        when(clientService.getClientById(id))
+        when(clientService.getClientResponseById(id))
                 .thenAnswer(inv -> {
                     latch.countDown();
                     latch.await();

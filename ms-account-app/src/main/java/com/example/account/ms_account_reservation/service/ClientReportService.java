@@ -33,7 +33,7 @@ public class ClientReportService {
 
         CompletableFuture<ClientResponseDto> clientF =  CompletableFuture.supplyAsync(() -> {
             metricsService.recordAsyncTask();
-            return clientService.getClientById(id);
+            return clientService.getClientResponseById(id);
         }, currencyExecutor);
 
         CompletableFuture<BigDecimal> usdF = CompletableFuture.supplyAsync(() -> {

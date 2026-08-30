@@ -89,7 +89,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientResponseDto'
+                $ref: '#/components/schemas/ClientDetailsResponseDto'
         '404':
           description: Client not found
           content:
@@ -365,3 +365,43 @@ components:
           type: object
           additionalProperties:
             type: number
+
+    AccountDto:
+      type: object
+      required:
+        - id
+        - accountType
+        - currencyCode
+        - status
+        - accountNumber
+        - balance
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountType:
+          type: string
+        currencyCode:
+          type: string
+        status:
+          $ref: '#/components/schemas/AccountStatusDto'
+        accountNumber:
+          type: string
+        balance:
+          type: number
+    AccountStatusDto:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    ClientDetailsResponseDto:
+      allOf:
+        - $ref: '#/components/schemas/ClientResponseDto'
+        - type: object
+          properties:
+            accounts:
+              type: array
+              items:
+                $ref: '#/components/schemas/AccountDto'

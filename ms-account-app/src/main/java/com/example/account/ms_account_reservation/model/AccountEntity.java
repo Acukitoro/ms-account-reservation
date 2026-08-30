@@ -3,6 +3,7 @@ package com.example.account.ms_account_reservation.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -32,4 +33,10 @@ public class AccountEntity {
 
     @Column(name = "currency_code")
     private String currencyCode;
+
+    @Column(name = "account_number")
+    private String accountNumber;
+
+    @Column(name = "balance")
+    private BigDecimal balance;
 }

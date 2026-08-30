@@ -1,5 +1,6 @@
 package com.example.account.ms_account_reservation.controller;
 
+import com.example.account.ms_account_reservation.dto.ClientDetailsResponseDto;
 import com.example.account.ms_account_reservation.dto.ClientExistsResponse;
 import com.example.account.ms_account_reservation.dto.ClientPageResponseDto;
 import com.example.account.ms_account_reservation.dto.ClientResponseDto;
@@ -91,11 +92,12 @@ class ClientControllerTest {
     void getClientById_whenExists_returns200() throws Exception {
 
         UUID id = UUID.randomUUID();
-        ClientResponseDto client = new ClientResponseDto();
+        ClientDetailsResponseDto  client = new ClientDetailsResponseDto();
         client.setId(id);
         client.setFullName("Test User");
         client.setMdmCode(1L);
-        client.setStatus(ClientResponseDto.StatusEnum.ACTIVE);
+        client.setStatus(ClientDetailsResponseDto.StatusEnum.ACTIVE);
+        client.setHasAccounts(true);
 
         when(service.getClientById(id))
                 .thenReturn(client);
@@ -104,7 +106,8 @@ class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.fullName").value("Test User"))
-                .andExpect(jsonPath("$.mdmCode").value(1L));
+                .andExpect(jsonPath("$.mdmCode").value(1L))
+                .andExpect(jsonPath("$.hasAccounts").value(Boolean.TRUE));
     }
 
     @Test
