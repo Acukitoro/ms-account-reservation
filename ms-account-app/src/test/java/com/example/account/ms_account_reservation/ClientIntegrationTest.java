@@ -9,6 +9,8 @@ import com.example.account.ms_account_reservation.repository.AccountStatusReposi
 import com.example.account.ms_account_reservation.repository.ClientRepository;
 import com.example.account.ms_account_reservation.util.TestJsonReader;
 import jakarta.persistence.EntityManager;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.springframework.transaction.annotation.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,5 +172,48 @@ class ClientIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(3)))
                 .andExpect(jsonPath("$.content[*].hasAccounts", everyItem(is(true))));
+    }
+
+    @Test
+    void getClientById_whenHasAccounts_executesSingleQuery() throws Exception {
+
+        AccountStatusEntity status = accountStatusRepository.findById(1).orElseThrow();
+        ClientEntity client = saveClientWithAccount(30L, status);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Statistics stats = entityManager.getEntityManagerFactory()
+                .unwrap(SessionFactory.class).getStatistics();
+        stats.clear();
+
+        mockMvc.perform(get("/clients/{clientId}", client.getId()))
+                .andExpect(status().isOk());
+
+        assertEquals(1, stats.getPrepareStatementCount());
+    }
+
+    @Test
+    void getClients_whenMultipleClientsOnPage_executesAtMostTwoQueries() throws Exception {
+
+        AccountStatusEntity status = accountStatusRepository.findById(1).orElseThrow();
+
+        for (long i = 1; i <= 3 ; i++) {
+            saveClientWithAccount(100 + i, status);
+        }
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Statistics stats = entityManager.getEntityManagerFactory()
+                .unwrap(SessionFactory.class).getStatistics();
+        stats.clear();
+
+        mockMvc.perform(get("/clients"))
+                .andExpect(status().isOk());
+
+        long queries = stats.getPrepareStatementCount();
+
+        assertTrue(queries >= 1 && queries <= 2, "expected 1-2 queries but was " + queries);
     }
 }

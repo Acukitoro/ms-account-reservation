@@ -5,6 +5,7 @@ import com.example.account.ms_account_reservation.model.ClientEntity;
 import com.example.account.ms_account_reservation.model.ClientStatus;
 import com.example.account.ms_account_reservation.model.AccountEntity;
 import com.example.account.ms_account_reservation.model.AccountStatusEntity;
+import com.example.account.ms_account_reservation.repository.projection.ClientListView;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -25,10 +26,12 @@ public interface ClientMapper {
     @Mapping(target="hasAccounts", source = "entity", qualifiedByName = "hasAccounts")
     ClientResponseDto toDto(ClientEntity entity);
 
-    default ClientPageResponseDto toPageDto(Page<ClientEntity> page) {
+    ClientResponseDto toResponseDto(ClientListView view);
+
+    default ClientPageResponseDto toPageDto(Page<ClientListView> page) {
 
         List<ClientResponseDto> content = page.getContent().stream()
-                .map(this::toDto)
+                .map(this::toResponseDto)
                 .toList();
 
         ClientPageResponseDto dto = new ClientPageResponseDto();

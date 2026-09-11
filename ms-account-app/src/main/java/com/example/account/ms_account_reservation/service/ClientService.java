@@ -7,6 +7,7 @@ import com.example.account.ms_account_reservation.mapper.ClientMapper;
 import com.example.account.ms_account_reservation.model.ClientEntity;
 import com.example.account.ms_account_reservation.model.ClientStatus;
 import com.example.account.ms_account_reservation.repository.ClientRepository;
+import com.example.account.ms_account_reservation.repository.projection.ClientListView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,17 +55,7 @@ public class ClientService {
                 mdmCode
         );
 
-        Page<ClientEntity> page;
-        if (fullName != null && mdmCode != null) {
-            page = clientRepository.findByFullNameContainingAndMdmCode(fullName,mdmCode, pageable);
-        } else if (fullName != null) {
-            page = clientRepository.findByFullNameContaining(fullName, pageable);
-        } else if (mdmCode != null) {
-            page = clientRepository.findByMdmCode(mdmCode, pageable);
-        } else {
-            page = clientRepository.findAll(pageable);
-        }
-
+        Page<ClientListView> page = clientRepository.findPageWithAccountFlag(fullName, mdmCode, pageable);
         return clientMapper.toPageDto(page);
     }
 
@@ -73,7 +64,7 @@ public class ClientService {
 
         log.info("Fetching client by id={}", id);
 
-        ClientEntity entity = clientRepository.findById(id)
+        ClientEntity entity = clientRepository.findWithAccountsById(id)
                 .orElseThrow(() ->{
                     log.warn("Client not found id={}", id);
                     return new ClientNotFoundException(id);
